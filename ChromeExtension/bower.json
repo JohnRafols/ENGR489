@@ -1,0 +1,21 @@
+{
+  "name": "ChromeExtension",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "Adrele De Guzman <johnrafols777@yahoo.com>"
+  ],
+  "license": "ISC",
+  "moduleType": [],
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap-sass": "^3.3.6"
+  }
+}

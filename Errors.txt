@@ -1,5 +1,0 @@
-Errors:
-
-VM265:1 Mixed Content: The page at 'https://www.google.co.nz/#q=javascript+print+object+properties' was loaded over HTTPS, but requested an insecure script 'http://localhost/HTML_CodeSniffer/geterrors.js'. This request has been blocked; the content must be served over HTTPS.
-
-
