@@ -1,11 +1,37 @@
-@import "customVariables";
-@import "customBootstrap";
+//@import "customVariables";
+//@import "customBootstrap";
 
-#errorController{
-    width: 300px;
-    background-color: lightgrey;
-}
+// #errorController{
+//     width: 300px;
+//     background-color: lightgrey;
+// }
 
-#summaryInformation{
+// .errorValue{        
+// 	@include make-sm-column(4);
+//  }
+
+// #summaryInformation{
 	
+// }
+
+
+
+
+
+.allErrors{
+}
+.Critical{
+	background-color: red;
+}
+.Serious{
+	background-color: red * orange;
+}
+.Moderate{
+	background-color: orange;
+} 
+.Minor{
+ 	background-color: yellow;
+}
+.None{
+	background-color: none;
 }

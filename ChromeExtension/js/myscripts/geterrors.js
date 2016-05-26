@@ -11,15 +11,15 @@
 
 var _errors = [];
 var listOfErrorDescriptions = [];
-
 var currentErrorColor = 1;
 
-//This is the range of errors that user's want to see
-var errorsToShow = [];
 
+//May scrap for Angular.js...
+
+//This is the current range of errors that user's want to see
+var currentErrors = [];
 // For toggling the errors?
-var errorsDisplayed = false;
-
+var errorsDisplayed, criticalShow, seriousShow, moderateShow, minorShow = false;
 
 
 /*
@@ -83,7 +83,7 @@ function cssInformation(padding, backgroundColor){
 */
 
 
-function getErrorsAxe(){
+function getErrorsAxe(callback){
    axe.a11yCheck(document, function (results) {
 		//Get all errors
 		for(var i = 0; results.violations.length >i ; i++){	
@@ -133,13 +133,36 @@ function getErrorsAxe(){
 
 		    	//Add
 		    	_errors.push(new error(ratting, description, dom, cssInfo, solutions, externalPageInfo));
+
+			
+				// Here we wrap the DOM's with parent anchor tags, for more convenient control:
+				// Note, some DOM's can't be wrapped (ex: HTML tag, Body tag)
+	  			if($(dom).length == 1 && $(dom).prop("tagName") != "HTML" && $(dom).prop("tagName") != "BODY"){	 
+
+
+  					// $(dom).wrapAll('<a ng-class="home" errors-on-display class = "' 
+  					// 	+ "errorContainer errorRatting" + ratting + '" id = "' + 
+  					// ("error" + (_errors.length)) + ' " name = "' + 
+  					// ("error" + (_errors.length)) + '"= >')
+
+					//$(dom).wrapAll('<a  ng-click="toggle()" ng-class="home" errors-on-display>')
+					//$(dom).wrapAll('<div ng-controller="MainCtrl">')
+					$(dom).wrapAll('<a test>')
+					//$(dom).wrapAll('<a  ng-click="toggle()" ng-class="home" errors-on-display>')
+
+
+  					//its a selfish...
+
+
+	  			}
 	    	}
 		}
 
 		//Maybe initialize everything here?
 		listOfErrorDescriptions = ArrNoDupe(listOfErrorDescriptions);
-
+		callback()
 	});
+
 }
 
 
@@ -250,7 +273,6 @@ function restoreAllErrors(ratting){
 
 
 //Colors all errors of a certain raiting
-
 function colorAllErrors(ratting){
  	for(var i = 0; _errors.length>i; i++){
 		if(_errors[i].ratting == ratting){
@@ -259,8 +281,9 @@ function colorAllErrors(ratting){
 	}
 }
 
-//Toggles the overlay
 
+
+//Toggles the overlay
 function toggleOverlay(){
 	$('#overlay').toggle()
 }
@@ -360,17 +383,13 @@ function buildController(){
 	    }
   })
 
-
   //.parent().draggable().dialog();
-
   //Make sure the controller follows the screen
   $('.ui-dialog')
   		.css({
   			"position": "fixed",
   			"z-index" : 10000
   		});
-
-
 }
 
 
@@ -418,22 +437,22 @@ $(document).keypress(function(e) {
 	 }
 	
  	 if (keyPressed == 7) {
-		initialize()
+		buildController();
+ 	 }
+
+ 	 if (keyPressed == 8) {
+		console.log(_errors);
  	 }
 })
 
 
 //Initialize Everything 
-function initialize(){
+function initialize(callback){
 	if($('#overlay').length == 0){
-		getErrorsAxe();
-		//getErrors();
-		console.log("Errors Caught")
-		$('html').append("<div id = 'overlay'>")
-		//Import relevant files
-		//$('head').append('<link rel="stylesheet" href="http://localhost/HTML_CodeSniffer/customScripts/jquery-ui-1.11.4/jquery-ui.css" type="text/css" />');
+		getErrorsAxe(callback);
+		$('html').append("<div id = 'overlay'>");
 	}	
-		buildController();
+		//buildController();
 }
 
 
@@ -475,12 +494,26 @@ function ArrNoDupe(a) {
 
 var controller = new function(){
 	var ds;
-
 	this.getIssue = function(issueNumber){
 		console.log('testing');
 	};
 
 }
+
+
+/*
+	This returns the array of errors
+
+*/
+function getErrors(){
+	return  _errors;
+}
+
+function getErrorDescriptions(){
+	return listOfErrorDescriptions;
+}
+
+
 
 /*
 	This initializes all the code
@@ -488,8 +521,7 @@ var controller = new function(){
 */
 
 
-$(document).ready(function(){
-	console.log('Catching Errors...')
-	initialize();
-
-});
+// $(document).ready(function(){
+// 	console.log('Catching Errors...')
+// 	initialize();
+// });

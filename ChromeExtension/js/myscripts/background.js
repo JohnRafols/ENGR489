@@ -30,7 +30,10 @@ chrome.browserAction.onClicked.addListener(function (tab) {
 	//Testing angularjs integration
 	chrome.tabs.insertCSS(null, {file: "css/angular-csp.css"});
 	chrome.tabs.executeScript(null, {file: "js/lib/angular.min.js"});
-	
+	chrome.tabs.executeScript(null, {file: "js/lib/angular-route.min.js"});
+	chrome.tabs.executeScript(null, {file: "js/lib/angular-filter.min.js"});
+
+
 	//All relevant libraries:
 	chrome.tabs.executeScript(null, {file: "js/lib/jquery-2.2.3.min.js"});
 	chrome.tabs.executeScript(null, {file: "js/lib/jquery-ui-1.11.4/jquery-ui.min.js"});
@@ -38,10 +41,14 @@ chrome.browserAction.onClicked.addListener(function (tab) {
 	chrome.tabs.insertCSS(null, {file: "js/lib/jquery-ui-1.11.4/jquery-ui.min.css"});
 	chrome.tabs.insertCSS(null, {file: "js/lib/jquery-ui-1.11.4/jquery-ui.theme.min.css"});
 
+	//aXe API
 	chrome.tabs.executeScript(null, {file: "js/lib/node_modules/axe-core/axe.min.js"});
 
 	//My work:
+	chrome.tabs.insertCSS(null, {file: "css/controllerStyling.css"});
 	chrome.tabs.executeScript(null, {file: "js/myscripts/geterrors.js"});
+	chrome.tabs.executeScript(null, {file: "js/myscripts/testScript.js"});
+
 	//chrome.tabs.insertCSS(null, {file: "css/yourcss.css"});
 	
 });

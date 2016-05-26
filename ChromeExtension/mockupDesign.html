@@ -34,7 +34,7 @@
 	</div> -->
 
 
-	<div class="container">
+	<div class="row">
 		<!-- nav-pills highlights the choices -->	
 	 	<ul class="nav nav-pills">
 			<li class = "active"> <a href="#showAllErrors" data-toggle = "tab"> Summary </a> </li>
@@ -44,13 +44,35 @@
 		<div class="tab-content">
 			<!-- Put all content here (except the collapsable stuff) -->
 	 		<div class = "tab-pane fade in active" id="showAllErrors">
+	 			<div id = "summaryInformation" class = "row">
+			        <!-- Clicking these errors change the total. -->
+			          <div id="criticalErrorsTotal" class = "col-xs-3">
+			              <label>Critical</label>
+			              <div class="errorValue">0</div>
+			          </div>
 
-	 		adnso
+			          <div id="seriousErrorsTotal" class = "col-xs-3">
+			              <label>Serious</label>
+			              <div class="errorValue">0</div>
+			          </div>
+
+			          <div id="moderateErrorsTotal" class = "col-xs-3">
+			              <label>Moderate</label>
+			              <div class="errorValue">0</div>
+			          </div>
+
+			          <div id="minorErrorsTotal" class = "col-xs-3">
+			              <label>Minor</label>
+			              <div class="errorValue">0</div>
+			          </div>
+			    </div>		
 			</div>
 
 			<!-- Put errorlist here -->
 			<div class="tab-pane fade" id="getErrorList">
-				das
+			    <div id="errorList">
+			   	
+			    </div>
 			</div>
 		</div>
 
@@ -58,41 +80,16 @@
 
 
 	<!-- This div will change everytime -->
-	<div id = "information"> 
+	<!-- <div id = "information"> 
 
-	</div>
+	</div> -->
 
     
 	<!-- This div contains a summary of the number of errors. This div also contains filter buttons for the type of errors -->
 
-     <div id = "summaryInformation" class = "row">
-        <!-- Clicking these errors change the total. -->
-          <div id="criticalErrorsTotal" class = "col-xs-3">
-              <label>Critical</label>
-              <div class="errorValue">0</div>
-          </div>
-
-          <div id="seriousErrorsTotal" class = "col-xs-3">
-              <label>Serious</label>
-              <div class="errorValue">0</div>
-          </div>
-
-          <div id="moderateErrorsTotal" class = "col-xs-3">
-              <label>Moderate</label>
-              <div class="errorValue">0</div>
-          </div>
-
-          <div id="minorErrorsTotal" class = "col-xs-3">
-              <label>Minor</label>
-              <div class="errorValue">0</div>
-          </div>
-      </div>
 
    
 
-    <div id="errorList">
-   	
-    </div>
 
 	<!--  These are options that will always be present in the controller-->
     <div class="panel-group" id="accordion">
@@ -146,9 +143,9 @@
 			
 					<div id="collpasetwo" class="panel-collapse collapse" >
 						<div class="panel-body" id="displayErrorsOptions">
-							
-					            <button id="toggleOverlay"> Toggle Overlay</button>
-					
+							<button id="colorAllErrors"> Color All Errors </button>
+					        <button id="toggleOverlay"> Toggle Overlay</button>
+					        <button id="toggleCss"> Toggle CSS</button>
 
 						</div>
 					</div>
