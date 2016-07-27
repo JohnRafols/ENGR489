@@ -47,7 +47,7 @@ chrome.browserAction.onClicked.addListener(function (tab) {
 	//My work:
 	chrome.tabs.insertCSS(null, {file: "css/controllerStyling.css"});
 	chrome.tabs.executeScript(null, {file: "js/myscripts/geterrors.js"});
-	chrome.tabs.executeScript(null, {file: "js/myscripts/testScript.js"});
+	chrome.tabs.executeScript(null, {file: "js/myscripts/mainAngularApp.js"});
 
 	//chrome.tabs.insertCSS(null, {file: "css/yourcss.css"});
 	

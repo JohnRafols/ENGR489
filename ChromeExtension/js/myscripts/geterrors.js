@@ -56,13 +56,14 @@ var errorsDisplayed, criticalShow, seriousShow, moderateShow, minorShow = false;
 */
 
 
-function error(ratting, description, dom, cssInformation, solutions, externalPageInfo){
+function error(ratting, description, dom, cssInformation, solutions, externalPageInfo, htmlInfo){
     this.ratting = ratting;
     this.description = description;
     this.dom = dom;
     this.cssInformation = cssInformation;
     this.solutions = solutions;
     this.externalPageInfo = externalPageInfo;
+    this.htmlInfo = htmlInfo;
 }
 
 /*
@@ -97,7 +98,7 @@ function getErrorsAxe(callback){
 	    	listOfErrorDescriptions.push(description);
 
 	    	//This leads to an external URL for more information on the error
-	    	var externalPageInfo = results.violations[0].helpUrl;
+	    	var externalPageInfo = results.violations[i].helpUrl;
 
 	    	//The nodes have the actual number of errors
 	    	for(var j = 0; results.violations[i].nodes.length > j; j++){
@@ -129,10 +130,16 @@ function getErrorsAxe(callback){
 		    	var solutions = [];
 		    	for(var k = 0; results.violations[i].nodes[j].any.length > k; k++){
 		    		solutions[k] = results.violations[i].nodes[j].any[k].message;
- 				}
+		  		
+ 				}	
+ 				// There are two arrays of solutions, one in any and one in none. 
+				for(var k = 0; results.violations[i].nodes[j].none.length > k; k++){
+		    		solutions[k] = results.violations[i].nodes[j].none[k].message;
+  				}
 
 		    	//Add
-		    	_errors.push(new error(ratting, description, dom, cssInfo, solutions, externalPageInfo));
+
+		    	_errors.push(new error(ratting, description, dom, cssInfo, solutions, externalPageInfo, htmlString));
 
 			
 				// Here we wrap the DOM's with parent anchor tags, for more convenient control:
@@ -146,12 +153,11 @@ function getErrorsAxe(callback){
   					// ("error" + (_errors.length)) + '"= >')
 
 					//$(dom).wrapAll('<a  ng-click="toggle()" ng-class="home" errors-on-display>')
-					//$(dom).wrapAll('<div ng-controller="MainCtrl">')
-					$(dom).wrapAll('<a test>')
+					//$(dom).addClass("error" + (_errors.length));
+
+					$(dom).wrapAll('<a errors-on-display value = "' +   (_errors.length-1)  + '">')
 					//$(dom).wrapAll('<a  ng-click="toggle()" ng-class="home" errors-on-display>')
 
-
-  					//its a selfish...
 
 
 	  			}
@@ -160,10 +166,18 @@ function getErrorsAxe(callback){
 
 		//Maybe initialize everything here?
 		listOfErrorDescriptions = ArrNoDupe(listOfErrorDescriptions);
+		$('body').attr('ng-controller','MainCtrl');
+
+		
 		callback()
 	});
 
 }
+
+
+
+
+
 
 
 
@@ -183,7 +197,7 @@ function errorImpactToInt(impact){
 			return 4;
 			break;
 		default:
-			return 1;
+			return 0;
 			break;
 	}
 }

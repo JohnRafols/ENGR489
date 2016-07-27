@@ -1,14 +1,37 @@
-.Critical {
+.allErrors {
+  padding: 10px;
+  border: 2px solid black;
   background-color: red; }
 
+.Critical {
+  padding: 10px;
+  border: 2px solid black;
+  background-color: maroon; }
+
 .Serious {
+  padding: 10px;
+  border: 2px solid black;
   background-color: red; }
 
 .Moderate {
+  padding: 10px;
+  border: 2px solid black;
   background-color: orange; }
 
 .Minor {
+  padding: 10px;
+  border: 2px solid black;
   background-color: yellow; }
 
 .None {
-  background-color: none; }
+  padding: 0px;
+  border: 0px;
+  background-color: transparent !important; }
+
+.individualError {
+  padding: 20px;
+  border-radius: 2px solid black;
+  background-color: grey !important; }
+
+.red {
+  background-color: #cc0000; }
