@@ -103,7 +103,10 @@ function getErrorsAxe(callback){
 	    	//The nodes have the actual number of errors
 	    	for(var j = 0; results.violations[i].nodes.length > j; j++){
 
+	    		//console.log(results.violations[i].nodes[j].impact)
+
 				var ratting = errorImpactToInt(results.violations[i].nodes[j].impact);	
+
 				// Dom's an HTML string. 
 		    	var htmlString = results.violations[i].nodes[j].html;
 
@@ -130,11 +133,16 @@ function getErrorsAxe(callback){
 		    	var solutions = [];
 		    	for(var k = 0; results.violations[i].nodes[j].any.length > k; k++){
 		    		solutions[k] = results.violations[i].nodes[j].any[k].message;
-		  		
+		    		//console.log('original: ' + results.violations[i].nodes[j].impact) 
+		    		ratting =  errorImpactToInt(results.violations[i].nodes[j].any[k].impact);
+
  				}	
  				// There are two arrays of solutions, one in any and one in none. 
 				for(var k = 0; results.violations[i].nodes[j].none.length > k; k++){
 		    		solutions[k] = results.violations[i].nodes[j].none[k].message;
+		    		//console.log('original: ' + results.violations[i].nodes[j].impact) 
+		    		ratting = errorImpactToInt(results.violations[i].nodes[j].none[k].impact);
+
   				}
 
 		    	//Add
@@ -158,6 +166,8 @@ function getErrorsAxe(callback){
 					$(dom).wrapAll('<a errors-on-display value = "' +   (_errors.length-1)  + '">')
 					//$(dom).wrapAll('<a  ng-click="toggle()" ng-class="home" errors-on-display>')
 
+					// $(dom).attr( "errors-on-display", '');
+					// $(dom).attr( "value",  		(_errors.length-1)		);
 
 
 	  			}

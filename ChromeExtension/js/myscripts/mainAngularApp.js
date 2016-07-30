@@ -21,16 +21,16 @@ Error format:
  *
  */
 
+
+
 //Here we run geterrors.js now we'll have the variables we need.
-var _errors, listOfErrorDescriptions;
+var _errors;
 console.log('Catching Errors...')
 
 initialize(function(){
   //All of the errors
   _errors = getErrors();
   console.log("Errors Caught");
-  //List of error Descriptions
-  listOfErrorDescriptions = getErrorDescriptions();
 
   //These are all the views
   //Maybe seperate this into another
@@ -39,6 +39,10 @@ initialize(function(){
   $.get(controllerView, function(data) {
   	$($.parseHTML(data)).appendTo('body');
   	angular.bootstrap(document, ['plunker'])
+
+
+
+    //This is jQueryUI code, completely seperated from AngularJS
 
     //Make it draggable
      $('#angularJStest').dialog({
@@ -55,38 +59,74 @@ initialize(function(){
         // Refer to the controller variable
     })
 
-      $('.ui-dialog')
+    $('.ui-dialog')
       .css({
         "position": "fixed",
         "z-index" : 10000
       });
 
+
+    $( "#accordionFilters" ).accordion({
+      // Slide animation or not or length
+      animate: 200,
+      // Collapsible if same tab is clicked
+      collapsible: true,
+      active: false,
+      // Event that triggers
+      event: "click",
+      // Height based on content (content) or largest (auto)
+      heightStyle: "content"
+    });
+
+    
+
+
+
   });
 
 
 
+  //Remove all links to anywhere (Ask for opinion here).
+  $('a').removeAttr('href')
+ 
+  // $("#angularJStest").css({
+  //       "position": "fixed",
+  //       "z-index" : 10000
+  // });
+  // $("#angularJStest").draggable();
+  // $("#accordion").accordion();
 
+/**
+ * +--------------------------------------------------------------------+
+
+    
+    This is the start of the AngularJS code
+
+
+ * +--------------------------------------------------------------------+
+ *
+ */
 
 
   //Testing AngularJS
   angular.module('plunker', ['angular.filter'])
 
     //This is the main controller
-    .controller('MainCtrl', ['$scope', 'filterFilter', function($scope, $filter) {
+    .controller('MainCtrl', ['$scope', '$filter', function($scope, $filter) {
 
 
        // All of the (current) errors being manipulated 
       $scope.errorData = _errors;
 
       // Errors filtered by ratting
-      $scope.criticalErrors = $filter($scope.errorData, {ratting: 4}); 
-      $scope.seriousErrors = $filter($scope.errorData, {ratting: 3}); 
-      $scope.moderateErrors = $filter($scope.errorData, {ratting: 2}); 
-      $scope.minorErrors = $filter($scope.errorData, {ratting: 1}); 
+      $scope.criticalErrors = $filter('filter')($scope.errorData, {ratting: 4}); 
+      $scope.seriousErrors = $filter('filter')($scope.errorData, {ratting: 3}); 
+      $scope.moderateErrors = $filter('filter')($scope.errorData, {ratting: 2}); 
+      $scope.minorErrors = $filter('filter')($scope.errorData, {ratting: 1}); 
 
       //Errors filtered by kind:
-      $scope.listOfErrorDescriptions = listOfErrorDescriptions;
-      
+      $scope.listOfErrorDescriptions =  $filter('unique')($scope.errorData, 'description'); 
+          
       //My custom on-click filters
       //http://stackoverflow.com/questions/14882370/filter-list-of-items-when-clicking-category-link
       $scope.filters = {};
@@ -97,24 +137,6 @@ initialize(function(){
           $scope.$apply();
       };
 
-
-      //Errors filtered by Ratting:
-      $scope.filterAllDataByRatting = function(value){
-
-        //Hide, don't remove.
-        //But how?....
-        //First, don't change errorData.
-        //Instead, change ONLY the display
-
-         // if(value == 0){
-         //    $scope.errorData = _errors;
-         // }
-         // else{
-         //    $scope.errorData = $filter(_errors, {ratting: value}); 
-         // }
-      }
-
-      $scope.toggleClass = false;
 
       //This is for the CSS transition for selecting individual errors
       $scope.selectedIndexRatting = -1; 
@@ -153,24 +175,30 @@ initialize(function(){
  *
  */
 
-    .directive("errorsOnDisplay", function($rootScope) {
+    .directive("errorsOnDisplay", ['$rootScope', '$filter', function($rootScope, $filter) {
       return {
           restrict: 'A',
-          // scope: {
-          //   defaultClass:'=?'
-          // },
-          scope: true,
+          scope: {
+            value: "@",
+            iconValue: "@"
+
+          },
+          //scope: true,
           controller: 'MainCtrl',
           //Check scope and $broadcast and $on
           replace: true,
           transclude: true,
-          // template: '<div ng-click="onClick($event)" ng-class= "displayErrorByRatting(ratting); defaultClass" ng-transclude></div>',
-          template: '<div ng-click="onClick($event)" ng-class= "defaultClass" ng-transclude></div>',
+          //<div> vs <span>, ask for opinion
+          template: '<div style = "position: relative" ng-class= "defaultClass">' +
+                    '<ng-transclude></ng-transclude>' +
+                    '<a name = error{{value}} ng-click="onClick($event)" ng-class = "icon" value="{{value}}">{{iconValue()}}</a>' +
+                    '</div>',
+
           link: function (scope, element, attrs) {
 
               var errorsOnDisplay = element.children();
 
-          
+
               //Restart the showing/hiding
               scope.$on('restartEverything',  function(newval,oldval){
                  var errorIndex = attrs.value;
@@ -183,9 +211,26 @@ initialize(function(){
 
               });
 
+              /**
+               * +--------------------------------------------------------------------+          
+                   Icon
+               * +--------------------------------------------------------------------+
+               */
 
+              scope.iconValue = function(){
+                 var errorIndex = attrs.value;
+                 var currentDesc = scope.errorData[errorIndex].description;           
+                 for (var i = 0; i < scope.listOfErrorDescriptions.length; i++) {
+                    if(currentDesc == scope.listOfErrorDescriptions[i].description){
+                      var filterIndex = String.fromCharCode(65 + i);
+                    }
+                 }
+                 return filterIndex + ':' + (parseInt(errorIndex)+1);
+              };
 
-            /**
+        
+
+              /**
                * +--------------------------------------------------------------------+          
                     Filter by Type
                * +--------------------------------------------------------------------+
@@ -231,27 +276,32 @@ initialize(function(){
               //Show specific error
               scope.$on('showIndividualErrorOnScreen',  function(event, data){
                  var errorIndex = attrs.value;
-                  
+                 var impact = scope.errorData[errorIndex].ratting;
+                 var errorRatting = errorIntToImpact(impact);
+
+
                  // Remove the previous individual error's class if it is selected
                  if(element.hasClass("individualError")){
-                    
-                    element.removeClass('individualError');
+                    getErrorClass(impact);
                  }
 
                  if(attrs.value == data){
-                    element.addClass('individualError')
-                      
+                    //element.addClass('individualError')
+                    scope.defaultClass = "individualError";
                  }
 
               });
 
 
               scope.onClick = function($event){
+
                   var errorIndex = $event.currentTarget.attributes.value.value
  
                   scope.$emit('individualErrorInformation', {
                     errorIndex: errorIndex
                   });
+
+
 
               }
 
@@ -262,29 +312,6 @@ initialize(function(){
                   Filter by Ratting
              * +--------------------------------------------------------------------+
              */
-
-
-
-              //This is for filterring the errors on screen by their ratting/impact
-              // scope.displayErrorByRatting = function(ratting){
-                 
-              //   //See geterrors.js
-              //   var errorIndex = attrs.value;
-              //   var impact = scope.errorData[errorIndex].ratting;
-              //   var errorRatting = errorIntToImpact(impact);
-
- 
-              //   if(ratting == 'noFilter' || ratting == 'allErrors'){
-              //       return getErrorClass(impact);
-              //   }
-              //   else if(errorRatting == ratting){
-              //       return getErrorClass(impact);
-              //   }
-              //   else{
-              //       return 'None';
-              //   }
-      
-              // }
 
 
               scope.$on('displayErrorByRatting', function(event, ratting) { 
@@ -306,10 +333,7 @@ initialize(function(){
 
 
                 // Okay, next thing is to hide what's in the error list...
-                // No need to broadcast(?)
-
-                //Affects the broadcast as well.
-
+      
                   scope.$emit('hideByFilter', {
                     hide: ratting
                   });
@@ -330,25 +354,35 @@ initialize(function(){
               // var errorIndex = attrs.value;
               // var impact = scope.errorData[errorIndex].ratting;
               // getErrorClass(impact);
+              scope.icon = "iconHide"
+
 
               function getErrorClass(impact){
                   switch (impact) {
                     case 1:
                       scope.defaultClass = "Minor";
+                      scope.icon = "icon"
                       break;
                     case 2:
                       scope.defaultClass =  "Moderate";
+                      scope.icon = "icon"
+
                       break;
                     case 3:
                       scope.defaultClass =  "Serious";
+                      scope.icon = "icon"
+
                       break;
                     case 4:
                       scope.defaultClass =  "Critical";
+                      scope.icon = "icon"
                       break;
                     default:
                       scope.defaultClass =  "None";
+                      scope.icon = "iconHide"
                       break;
-                  }  
+                  }
+
               }
 
 
@@ -356,7 +390,7 @@ initialize(function(){
 
           }
       }
-    })
+    }])
 
 
 
@@ -371,21 +405,35 @@ initialize(function(){
  * +--------------------------------------------------------------------+
  *
  */
-
-
-    .directive("errorsInController", function($rootScope) {
+ 
+    .directive("errorsInController", ['$rootScope', '$filter', function($rootScope, $filter) {
 
       return function (scope, element, attrs) {
-          
-    
+
+           
+          //List of unique
+          // scope.listOfErrors = $filter('unique')(scope.errorData, 'description'); 
+          // for (var i = 0; i < scope.listOfErrors.length; i++) {
+          //   var typeIndex =  String.fromCharCode(65 + i);
+          //   var description = scope.listOfErrors[i].description;
+          // }
+
+
+
           scope.restartEverything = function(){
-               
                // Restart filters
                // scope.hideByFilter = 0;
                scope.hideByType = null;
                scope.selectedIndex = -1; 
-               scope.selectedIndexFilter = -1; 
+               scope.selectedIndexFilter = -1;
 
+
+               //Restart individual error
+               scope.description = '';
+               scope.htmlSnippet = '';
+               scope.solution = '';
+               scope.moreInfo = ''; 
+               scope.individualError = '';
 
 
                //$rootScope.$broadcast('restartEverything', '');
@@ -437,7 +485,22 @@ initialize(function(){
            */
           scope.hideByType = null;
 
-          scope.displayType = function(description){
+          scope.typeIndex = function(index){
+            return String.fromCharCode(65 + index);
+          }
+
+          // scope.typeAndErrorIndex = function(index){
+          //    var currentDesc = scope.errorData[index].description;           
+          //    for (var i = 0; i < scope.listOfErrorDescriptions.length; i++) {
+          //       if(currentDesc == scope.listOfErrorDescriptions[i].description){
+          //         var filterIndex = String.fromCharCode(65 + i);
+          //       }
+          //    }
+          //    return filterIndex + ':' + (parseInt(errorIndex)+1);
+          // };
+
+
+          scope.displayType = function(description, filterIndex){
               //Communicate this with the errors-on-display directive via broadcast
               $rootScope.$broadcast('filterByType', {
                     data: description
@@ -495,10 +558,13 @@ initialize(function(){
           }
 
 
+
+
+
   
 
       }
-    })
+    }])
 
 
 
