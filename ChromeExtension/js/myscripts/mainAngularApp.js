@@ -22,6 +22,8 @@ Error format:
  */
 
 
+// //In attempt to run this app to pages w/ angularjs already
+// var chromeAngular = $.extend(true, {}, angular);
 
 //Here we run geterrors.js now we'll have the variables we need.
 var _errors;
@@ -32,41 +34,72 @@ initialize(function(){
   _errors = getErrors();
   console.log("Errors Caught");
 
-  //These are all the views
-  //Maybe seperate this into another
+  // The HTML for the "Controller" of the errors
   var controllerView = chrome.extension.getURL('views/controller.html');
 
+  //This code is for appending the controller on the side of any website
+  var width = '250px';
+  var html;
+  if (document.documentElement) {
+    html = $(document.documentElement); //just drop $ wrapper if no jQuery
+  } else if (document.getElementsByTagName('html') && document.getElementsByTagName('html')[0]) {
+    html = $(document.getElementsByTagName('html')[0]);
+  } else if ($('html').length > -1) {//drop this branch if no jQuery
+    html = $('html');
+  } else {
+    alert('no html tag retrieved...!');
+    throw 'no html tag retrieved son.';
+  }
+
+  //position
+  if (html.css('position') === 'static') { //or //or getComputedStyle(html).position
+    html.css('position', 'relative');//or use .style or setAttribute
+  }
+
+  //top (or right, left, or bottom) offset
+  var currentTop = html.css('left');//or getComputedStyle(html).top
+  if (currentTop === 'auto') {
+    currentTop = 0;
+  } else {
+    currentTop = parseFloat($('html').css('left')); //parseFloat removes any 'px' and returns a number type
+  }
+  html.css(
+    'left',     //make sure we're -adding- to any existing values
+    currentTop + parseFloat(width) + 'px'
+  );
+
+
+
   $.get(controllerView, function(data) {
-  	$($.parseHTML(data)).appendTo('body');
-  	angular.bootstrap(document, ['plunker'])
+
+    var angularExists = $('[ng-app],[data-ng-app],[class*=ng-app], [ng-scope]').length > 0;
+    console.log('Has Angular: ' + angularExists);
+
+    // if(angularExists) {
+    //   console.log('angular already exists.')
+    //   $($.parseHTML(data)).appendTo('body');
+    //   // var wrapper = '<div ng-non-bindable> </div>';
+    //   // $('#angularJStest').wrap(wrapper);
+    //   // $('a[errors-on-display]').wrap(wrapper);
+    //   // Insert elements into the DOM
+    //   $('#angularJStest, a[errors-on-display]').append(appRoot);
+    //   window.name = '';
+    //   angular.bootstrap( appRoot, ['webAccessibilityApp']);
+    // } 
+    // else{
+    //   $($.parseHTML(data)).appendTo('body');
+    //   window.name = '';   // To allow `bootstrap()` to continue normally
+    //   angular.bootstrap(document, ['webAccessibilityApp'])
+    // }
+
+    $($.parseHTML(data)).appendTo('body');
+    window.name = '';   // To allow `bootstrap()` to continue normally
+    chromeAngular.bootstrap(document, ['webAccessibilityApp'])
 
 
-
-    //This is jQueryUI code, completely seperated from AngularJS
-
-    //Make it draggable
-     $('#angularJStest').dialog({
-        draggable: true, // Set true by default
-        height: 300, 
-        width: 300,
-        position:'center',
-        // Define a delay for showing or hiding it
-        show: 500,
-        stack: "div",
-        hide: '500',
-        autoOpen: true, // Open true by default
-        // create buttons for the dialog
-        // Refer to the controller variable
-    })
-
-    $('.ui-dialog')
-      .css({
-        "position": "fixed",
-        "z-index" : 10000
-      });
-
-
-    $( "#accordionFilters" ).accordion({
+    //This is jQueryUI code, completely seperated from AngularJS. It's for styling the error Controller
+    $( "#accordionFilters > div" ).accordion({
+      header: "h3",
       // Slide animation or not or length
       animate: 200,
       // Collapsible if same tab is clicked
@@ -78,23 +111,15 @@ initialize(function(){
       heightStyle: "content"
     });
 
+    $('#tabEx').click(function() {
+      $(this).next().toggle('slow');
+      return false;
+    }).next().hide();
+
     
-
-
-
   });
 
 
-
-  //Remove all links to anywhere (Ask for opinion here).
-  $('a').removeAttr('href')
- 
-  // $("#angularJStest").css({
-  //       "position": "fixed",
-  //       "z-index" : 10000
-  // });
-  // $("#angularJStest").draggable();
-  // $("#accordion").accordion();
 
 /**
  * +--------------------------------------------------------------------+
@@ -109,10 +134,9 @@ initialize(function(){
 
 
   //Testing AngularJS
-  angular.module('plunker', ['angular.filter'])
-
+  chromeAngular.module('webAccessibilityApp', ['chromeAngular.filter'])
     //This is the main controller
-    .controller('MainCtrl', ['$scope', '$filter', function($scope, $filter) {
+    .controller('ChromeExtensionCtrl', ['$scope', '$filter', function($scope, $filter) {
 
 
        // All of the (current) errors being manipulated 
@@ -142,18 +166,26 @@ initialize(function(){
       $scope.selectedIndexRatting = -1; 
 
       $scope.itemClickedRatting = function ($index) {
+        if($scope.selectedIndexRatting == $index){
+           $scope.selectedIndexRatting = -1; 
+         }
+        else{
           $scope.selectedIndexRatting = $index; 
+        }
       };
 
      
       //Communicate with errorsOnDisplay and change the error classes on-screen
       //Unless allErrors
-      $scope.filterErrorsByRatting = function(value){
-        if(value == 'allErrors'){
-            //Restart everything
+      $scope.filterErrorsByRatting = function(value, currentIndex){ 
+        if($scope.selectedIndexRatting == currentIndex){
+            //Restart everything in types...
+            $scope.$broadcast('displayErrorByRatting', 'null');
+            //Also Restart Everything in errors in controller
         }
-        $scope.$broadcast('displayErrorByRatting', value);
-
+        else{
+          $scope.$broadcast('displayErrorByRatting', value);
+        }
       }
 
 
@@ -184,15 +216,15 @@ initialize(function(){
 
           },
           //scope: true,
-          controller: 'MainCtrl',
+          controller: 'ChromeExtensionCtrl',
           //Check scope and $broadcast and $on
           replace: true,
           transclude: true,
           //<div> vs <span>, ask for opinion
-          template: '<div style = "position: relative" ng-class= "defaultClass">' +
+          template: '<span style = "position: relative" ng-class= "defaultClass">' +
                     '<ng-transclude></ng-transclude>' +
                     '<a name = error{{value}} ng-click="onClick($event)" ng-class = "icon" value="{{value}}">{{iconValue()}}</a>' +
-                    '</div>',
+                    '</span>',
 
           link: function (scope, element, attrs) {
 
@@ -463,12 +495,23 @@ initialize(function(){
 
           //This communicates to the other directive to emphasize the specified error
           function showIndividualErrorOnScreen(index){
+              //
+              // if(scope.selectedIndex == index){
+              // $rootScope.$broadcast('showIndividualErrorOnScreen', index);
+
+              // }
+
               $rootScope.$broadcast('showIndividualErrorOnScreen', index);
           }
 
           //Css
           scope.selectedIndex = -1; 
           scope.itemClicked = function ($index) {
+
+            // open the individual panel...
+            // angular.element(document.querySelector("#individualInfoPanel")).triggerHandler('click');
+
+
              scope.selectedIndex = $index;
              //This is for the individual error information
              scope.individualError =  scope.errorData[$index];
@@ -489,30 +532,34 @@ initialize(function(){
             return String.fromCharCode(65 + index);
           }
 
-          // scope.typeAndErrorIndex = function(index){
-          //    var currentDesc = scope.errorData[index].description;           
-          //    for (var i = 0; i < scope.listOfErrorDescriptions.length; i++) {
-          //       if(currentDesc == scope.listOfErrorDescriptions[i].description){
-          //         var filterIndex = String.fromCharCode(65 + i);
-          //       }
-          //    }
-          //    return filterIndex + ':' + (parseInt(errorIndex)+1);
-          // };
-
-
           scope.displayType = function(description, filterIndex){
               //Communicate this with the errors-on-display directive via broadcast
-              $rootScope.$broadcast('filterByType', {
-                    data: description
-              });
+              if(scope.selectedIndexFilter == filterIndex){
+                  //console.log('Restarting type filter')
+                  $rootScope.$broadcast('filterByType', {
+                        data: 'no'
+                  });
+                  scope.hideByType = null;
+                  //scope.selectedIndexFilter = -1; 
+              }
 
-              scope.hideByType = description;
+              else{
+                  $rootScope.$broadcast('filterByType', {
+                        data: description
+                  });
+                  scope.hideByType = description;
+              }
           }
 
           //Css
           scope.selectedIndexFilter = -1; 
           scope.filterClicked = function ($index){
+            if(scope.selectedIndexFilter == $index){
+              scope.selectedIndexFilter = -1; 
+            }
+            else{
               scope.selectedIndexFilter = $index;
+            }
           }
 
           scope.filterErrorListByType = function(error, ratting){

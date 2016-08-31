@@ -176,7 +176,7 @@ function getErrorsAxe(callback){
 
 		//Maybe initialize everything here?
 		listOfErrorDescriptions = ArrNoDupe(listOfErrorDescriptions);
-		$('body').attr('ng-controller','MainCtrl');
+		$('body').attr('ng-controller','ChromeExtensionCtrl');
 
 		
 		callback()
