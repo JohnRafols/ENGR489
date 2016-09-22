@@ -13,73 +13,85 @@
     <div id="accordionFilters">
 
       <div>
-          <h3>Error Rattings</h3>
-          <div>
+          <h3>
+          Error Rattings 
+          <span style = "display: block; float: right;  margin-right: 10px; " ng-class = "colorIndicator(selectedIndexRatting)" ng-show = "selectedIndexRatting != -1">  </span> 
+          </h3>
+
+          <div id = "errorRattingsPanel" >
 
                 <ul errors-in-controller>
-                    <li id="totalErrorCount" ng-click = "
+                    <li id="totalErrorCount" style = "margin-bottom: 10px;" class = "rattingListItem hoverListItem"
+                    ng-click = "
                     filterErrorsByRatting('allErrors', 0);
                     itemClickedRatting(0);
                     " ng-class= " {'selectedItemInPanel': 0 == selectedIndexRatting } ">
-                        <label>Total Errors</label>
-                        <div class="errorValue">{{errorData.length}}</div>
+                        <label>Total Errors ({{errorData.length}}) </label> 
+                        <!-- <div class="errorValue">{{errorData.length}}</div> -->
 
                     </li>
 
-                    <li id="criticalErrorsTotal"  ng-click = "
+                    <li id="criticalErrorsTotal" class = "rattingListItem hoverListItem"  ng-click = "
                     filterErrorsByRatting('critical', 4);
                     itemClickedRatting(4);
                     " ng-class= " {'selectedItemInPanel': 4 == selectedIndexRatting } ">
-                        <label>Critical</label>
-                        <div class="errorValue">{{criticalErrors.length}}</div>
+                        <label>Critical ({{criticalErrors.length}})
+                        <span ng-class = "colorIndicator(4)">  </span> 
+                        </label> 
+                        <!-- <div class="errorValue">{{criticalErrors.length}}</div> -->
                     </li>
 
 
-                    <li id="seriousErrorsTotal" ng-click = "
+                    <li id="seriousErrorsTotal" class = "rattingListItem hoverListItem" ng-click = "
                     filterErrorsByRatting('serious', 3);
                     itemClickedRatting(3);
                     " ng-class= " {'selectedItemInPanel': 3 == selectedIndexRatting } ">
-                        <label>Serious</label>
-                        <div class="errorValue">{{seriousErrors.length}}</div>
+                        <label>Serious ({{seriousErrors.length}})
+                        <span ng-class = "colorIndicator(3)">  </span> 
+                        </label>
+                        <!-- <div class="errorValue">{{seriousErrors.length}}</div> -->
                     </li>
 
 
-                    <li id="moderateErrorsTotal" ng-click = "
+                    <li id="moderateErrorsTotal" class = "rattingListItem hoverListItem" ng-click = "
                     filterErrorsByRatting('moderate', 2);
                     itemClickedRatting(2);
                     " ng-class= " {'selectedItemInPanel': 2 == selectedIndexRatting } ">
-                        <label>Moderate</label>
-                        <div class="errorValue">{{moderateErrors.length}}</div>
+                        <label>Moderate ({{moderateErrors.length}})
+                        <span ng-class = "colorIndicator(2)">  </span> 
+                        </label>
+                        <!-- <div class="errorValue">{{moderateErrors.length}}</div> -->
                     </li>
 
-                    <li id="minorErrorsTotal" ng-click = "
+                    <li id="minorErrorsTotal" class = "rattingListItem hoverListItem" ng-click = "
                     filterErrorsByRatting('minor', 1);
                     itemClickedRatting(1);
                     " ng-class= " {'selectedItemInPanel': 1 == selectedIndexRatting } ">
-                        <label>Minor</label>
-                        <div class="errorValue">{{minorErrors.length}}</div>
+                        <label>Minor ({{minorErrors.length}})
+                        <span ng-class = "colorIndicator(1)">  </span> 
+                        </label>
+                        <!-- <div class="errorValue">{{minorErrors.length}}</div> -->
                     </li>
 
-                <!--     <li id="noneErrorsTotal" class = "col-xs-3" ng-click = "itemClickedRatting(-1);
-                    displayErrorByRatting('-')" ng-class= " {'selectedItemInPanel': -1 == selectedIndexRatting } ">
-                        <label>Show Nothing</label>
-                    </li>
-         -->
+  
 
               </ul>
           </div>
       </div>
 
-      <div>
-          <h3>Error Types</h3>
+      <div id = "errorTypesPanel">
+          <h3>Error Types <span style = "color: white; display: block; float: right;  margin-right: 10px;" ng-show = "currentTypeFilter != null"> ({{currentTypeFilter}}) </span> </h3>
           <div>
 
-                <ul id="errorFiltersDescriptions" ng-repeat = "error in errorDataByFilter = (errorData | filter:filters | unique: 'description' )"
+            <ul>
+
+                <div id="errorFiltersDescriptions" ng-repeat = "error in errorDataByFilter = (errorData | filter:filters | unique: 'description' )"
                 > 
 
 
 
-                  <li  ng-class="{ 'selectedItemInPanel': $index == selectedIndexFilter }"
+                  <li   class = "hoverListItem" 
+                        ng-class="{ 'selectedItemInPanel': $index == selectedIndexFilter }"
                         ng-click="displayType(error.description, $index); filterClicked($index)"
                         ng-show = "filterErrorListByRatting(error)" 
                         >
@@ -89,31 +101,46 @@
                   </li>
 
 
-                </ul>
+                </div>
+
+              </ul>
              
           </div>
       </div>
 
-      <div>
-          <h3>Error List</h3>
+         
+          <!--  <div ng-repeat = "example in filteselectedItemInPanelErrors = (errorData | 
+            filter: {ratting: selectedIndexRatting } |
+            filter: {description: listOfErrorDescriptions[selectedIndexFilter].description}
+             )"
+            >
+              
+            </div> -->
+
+      <div errors-in-controller id = "errorListPanel">
+          <h3>Error List 
+
+          <span style = "color: white; display: block; float: right;  margin-right: 10px;" > ({{totalCount()}}) </span>
+
+          </h3>
+
           <div>
-            
-
-
+           
             <ul>
-                <li 
-                     ng-repeat = "error in filteselectedItemInPanelErrors = (errorData | filter:filters)" 
-                     ng-class="{ 'selectedItemInPanel': $index == selectedIndex }"
-                     ng-click="showIndividualInformation($index); itemClicked($index)"
+                <div 
+                     ng-repeat = "error in filteselectedItemInPanelErrors = (errorData)" 
+                     ng-class="{ 'selectedItemInPanel': $index == selectedIndexIndividual}"
+                     ng-click="showIndividualInformation($index)"
                      ng-show = "filterErrorListByType(error, hideByFilter)" 
-
                  >
+ 
+                  
+                  <li>
+                   <a ng-click="gotoBottom()" href = "#error{{$index}}">   Error # {{$index + 1}} Type: {{getTypeLetter($index)}} </a>
 
-                   <a href = "#error{{$index}}">   Error # {{$index + 1}} </a>
+                   </li>
 
-
-
-                </li>
+                </div>
             </ul>
 
 
@@ -122,207 +149,86 @@
 
 
       <div id = "individualInfoPanel" >
+         <!--  Go here when you click an error -->
+          <a id="bottom"></a>
           <h3>Individual Info</h3>
-          <div>
-                <ul errors-in-controller>  
-                    <li>
-                    Ratting: {{individualError.ratting}}
-                    </li>
+          <div ng-show = "individualError != null">
+                <ul errors-in-controller> 
 
                     <li>
-                    Error Type: {{individualError.description}}
+                    <b> Ratting: </b> <span style = " display: inline-block !important; float: none !important; margin-bottom: -5px !important; " ng-class = "colorIndicator(individualError.ratting)">  </span> 
                     </li>
 
+                    <br>
+
                     <li>
-                    Why the error Happened:            
+                     <b> Error Type: </b> <br/> <div class = "Individualcontent"> {{individualError.description}} 
+                     </div> 
+                    </li>
+
+                    <br>  
+                    <br>
+
+                    <li>
+                    <b> Causes of Error: </b>
+
                     <div ng-repeat = "e in individualError.solutions ">  
-                      {{$index +1}}.)  {{e}} <br>
+                     <div class = "Individualcontent"> {{$index +1}}.)  {{e}} </div>
+                     <br>
                     </div>
                     </li>
 
-                    <li>
-                    HTML Snippet: <p>
-                    {{individualError.htmlInfo}} </p>
-                    </li>
+                    <br>
 
                     <li>
-                    <a href="{{individualError.externalPageInfo}}" target="_blank">  Click here for more information </a>
+                    <b> HTML Snippet: </b> 
+                    <p> <div class = "Individualcontent">
+                    {{individualError.htmlInfo}}  </div> </p>
+                    </li>
+
+                    <br>
+
+                    <li>
+                    <b> <a href="{{individualError.externalPageInfo}}" target="_blank">  Click here for more information. </a> </b>
                     </li>
 
                 </ul>
           </div>
+
       </div>
-
-
-
 
     </div>
 
+
+<!--     These are the instructions -->
+
+      <div id = "instructions" >
+         <!--  Go here when you click an error -->
+          <h3> <b> How to use: </b> </h3>
+              <ul>  
+                  <li>
+                    Click on Error Rattings or Error Types to start vizualizing the errors. 
+                  </li>
+                  <br>
+                  <li>
+                    You can combine the filters to narrow down the errors you wish to find.
+                  </li>
+                  <br>
+                  <li>
+                    To find information on the errors, either click the icons on screen, or check the Error List.
+                  </li>
+
+
+              </ul>
+
+      </div>
+
  
- 
-
-    <!--     <div errors-in-controller>
-        	  <div id="totalErrorCount" class = "col-xs-3" ng-click = "itemClickedRatting(0);
-            filterErrorsByRatting('allErrors')" ng-class= " {'selectedItemInPanel': 0 == selectedIndexRatting } ">
-	              <label>Total Errors</label>
-	              <div class="errorValue">{{errorData.length}}</div>
-
-	          </div>
-
-	          <div id="criticalErrorsTotal" class = "col-xs-3" ng-click = "itemClickedRatting(4);
-            filterErrorsByRatting('critical')" ng-class= " {'selectedItemInPanel': 4 == selectedIndexRatting } ">
-	              <label>Critical</label>
-	              <div class="errorValue">{{criticalErrors.length}}</div>
-	          </div>
-
-
-	          <div id="seriousErrorsTotal" class = "col-xs-3"  ng-click = "itemClickedRatting(3);
-            filterErrorsByRatting('serious')" ng-class= " {'selectedItemInPanel': 3 == selectedIndexRatting } ">
-	              <label>Serious</label>
-	              <div class="errorValue">{{seriousErrors.length}}</div>
-	          </div>
-
-
-	          <div id="moderateErrorsTotal" class = "col-xs-3" ng-click = "itemClickedRatting(2);
-            filterErrorsByRatting('moderate')" ng-class= " {'selectedItemInPanel': 2 == selectedIndexRatting } ">
-	              <label>Moderate</label>
-	              <div class="errorValue">{{moderateErrors.length}}</div>
-	          </div>
-
-	          <div id="minorErrorsTotal" class = "col-xs-3" ng-click = "itemClickedRatting(1);
-            filterErrorsByRatting('minor')" ng-class= " {'selectedItemInPanel': 1 == selectedIndexRatting } ">
-	              <label>Minor</label>
-	              <div class="errorValue">{{minorErrors.length}}</div>
-			      </div>
-
-
-
-
-
-            <div id="noneErrorsTotal" class = "col-xs-3" ng-click = "itemClickedRatting(-1);
-            displayErrorByRatting('-')" ng-class= " {'selectedItemInPanel': -1 == selectedIndexRatting } ">
-                <label>Show Nothing</label>
-            </div>
-
-
-		  </div>
-
-		<br> -->
-
-  		<!-- 
-
-  			Filter by error type 
-			This filtering should be done in the original page...
-
-  		-->
-<!-- 
-  		<label>Filter By Error Type: </label>
-  		<button ng-click="filters.description = ''; restartEverything() "> Clear Type filter </button>
-
-        <div id="errorFiltersDescriptions" class="row" ng-repeat = "error in errorDataByFilter = (errorData | filter:filters | unique: 'description' )"
-        > 
-
-
-
-        	<div  ng-class="{ 'selectedItemInPanel': $index == selectedIndexFilter }"
-                ng-click="displayType(error.description, $index); filterClicked($index)"
-                ng-show = "filterErrorListByRatting(error)" 
-                >
-
-        	     {{ typeIndex($index) }}.) {{error.description}}
-
-        	</div>
-
-
-        </div>
       
-      <br> -->
-
-
-
-		<!-- 
-
-  			Error List
-
-  		-->
-
-
-       <!--  <label> Error List: </label>
-
-
-
-        <div 
-             ng-repeat = "error in filteselectedItemInPanelErrors = (errorData | filter:filters)" 
-             ng-class="{ 'selectedItemInPanel': $index == selectedIndex }"
-             ng-click="itemClicked($index); showIndividualInformation($index)"
-             ng-show = "filterErrorListByType(error, hideByFilter)" 
-
-         >
-
-              Error # {{$index + 1}}
-
-
-
-        </div> -->
-
-
-       <!--   <div ng-repeat = "error in errorData | filter:filters " 
-             ng-class="{ 'selectedItemInPanel': $index == selectedIndex }"
-             ng-click="itemClicked($index); showIndividualInformation($index)">
-
-            Error # {{$index + 1}}
-
-        </div> -->
-
-
-       <!--  <br> -->
-
-
-            <!--   Individual Error Description error description   -->
-
-
-      <!--   <b><label> Individual Error Description: </label></b>
-
-        <div errors-in-controller class="row">  
-          <div>
-            <br>
-            Ratting: {{individualError.ratting}}
-            <br>
-            Error Type: {{individualError.description}}
-            <br>
-
-            Why the error Happened:
-            <br>
-            
-            <div ng-repeat = "e in individualError.solutions ">  
-              {{$index +1}}.)  {{e}} <br>
-            </div>
-
-            <br>
-            HTML Snippet: 
-            <br>
-            {{individualError.htmlInfo}}
-
-
-            <br>
-            <br>
-
-            More Information: 
-            <br>
-            {{individualError.externalPageInfo}}
-
-          </div>
-        </div> -->
-
-
-       
 
 </div>
 
 
- 
-<!-- </div>
- -->
 
 
 

@@ -2,3 +2,9 @@
 	Name: <br>
    <div ng-controller='MainCtrl'> Hello, {{name}} </div>
 </div>
+
+  <div ng-repeat = "example in filteselectedItemInPanelErrors = (errorData | 
+            filter: {ratting: selectedIndexRatting } |
+            filter: {description: listOfErrorDescriptions[selectedIndexFilter].description}
+             )"
+            >
