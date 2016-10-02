@@ -19,6 +19,7 @@
 	],
 	"content_scripts": [
 	    {
+	      "run_at": "document_end",
 	      "matches": ["http://*/*", "https://*/*", "<all_urls>"], 
       	  "css": ["js/lib/jquery-ui-1.11.4/jquery-ui.css"]
  	    }

@@ -12,18 +12,29 @@
   font: helvetica !important;
   color: #333 !important; }
   #angularJStest ul {
+    cursor: pointer !important;
     display: inline !important;
-    list-style-type: none !important; }
+    list-style-type: none !important;
+    list-style: none !important;
+    list-style-image: none !important;
+    list-style-position: outside !important; }
     #angularJStest ul li .rattingListItem {
       padding: 2px !important;
       margin-top: 2.5px !important;
-      margin-bottom: 5px !important; }
+      margin-bottom: 5px !important;
+      background: #3498db;
+      border-radius: 28px; }
       #angularJStest ul li .rattingListItem label {
         margin: 5px !important; }
   #angularJStest #errorRattingsPanel li, #angularJStest #errorTypesPanel li, #angularJStest #errorListPanel li {
     padding: 2px !important;
     margin-top: 2.5px;
-    margin-bottom: 2.5px; }
+    margin-bottom: 2.5px;
+    cursor: pointer !important;
+    list-style-type: none !important;
+    list-style: none !important;
+    list-style-image: none !important;
+    list-style-position: outside !important; }
   #angularJStest #errorRattingsPanel li:hover, #angularJStest #errorTypesPanel li:hover, #angularJStest #errorListPanel li:hover {
     background-color: #C3C3E5;
     transition: background-color 0.2s ease; }
@@ -47,25 +58,25 @@
   padding: 10px !important;
   display: block !important;
   border: 2px solid black !important;
-  background-color: maroon; }
+  background-color: darkred; }
 
 .Serious {
   padding: 10px !important;
   display: block !important;
   border: 2px solid black !important;
-  background-color: red; }
+  background-color: #BF5700; }
 
 .Moderate {
   padding: 10px !important;
   display: block !important;
   border: 2px solid black !important;
-  background-color: #f39c12; }
+  background-color: orange; }
 
 .Minor {
   padding: 10px !important;
   display: block !important;
   border: 2px solid black !important;
-  background-color: #f1c40f; }
+  background-color: yellow; }
 
 .Critical_Indicator {
   border-radius: 999px !important;
@@ -74,7 +85,7 @@
   width: 20px !important;
   display: block !important;
   float: right !important;
-  background-color: maroon; }
+  background-color: darkred; }
 
 .Serious_Indicator {
   border-radius: 999px !important;
@@ -83,7 +94,7 @@
   width: 20px !important;
   display: block !important;
   float: right !important;
-  background-color: red; }
+  background-color: #BF5700; }
 
 .Moderate_Indicator {
   border-radius: 999px !important;
@@ -92,7 +103,7 @@
   width: 20px !important;
   display: block !important;
   float: right !important;
-  background-color: #f39c12; }
+  background-color: orange; }
 
 .Minor_Indicator {
   border-radius: 999px !important;
@@ -101,7 +112,7 @@
   width: 20px !important;
   display: block !important;
   float: right !important;
-  background-color: #f1c40f; }
+  background-color: yellow; }
 
 .None {
   padding: 0px;
@@ -130,7 +141,8 @@
   z-index: 2147483640 !important;
   color: black !important;
   font-weight: bold !important;
-  font-size: 12px !important; }
+  font-size: 12px !important;
+  cursor: pointer !important; }
 
 .icon:hover {
   font-size: 16px !important;
@@ -146,6 +158,11 @@
   padding-right: 40px !important;
   font: helvetica !important;
   color: #333 !important; }
+  #instructions ul, #instructions li {
+    list-style-type: none !important;
+    list-style: none !important;
+    list-style-image: none !important;
+    list-style-position: outside !important; }
   #instructions h3 {
     margin-bottom: 10px !important;
     font-weight: bold !important;
@@ -157,3 +174,17 @@
   margin-top: 5px !important;
   margin-bottom: -20px !important;
   word-wrap: break-word !important; }
+
+#toggleCSSButton {
+  background: #3498db !important;
+  border-radius: 28px !important;
+  color: #ffffff !important;
+  font-size: 16px !important;
+  padding: 10px 20px 10px 20px !important;
+  margin-top: 15px !important;
+  text-align: center !important;
+  cursor: pointer !important; }
+
+#toggleCSSButton:hover {
+  background-color: #C3C3E5;
+  transition: none !important; }

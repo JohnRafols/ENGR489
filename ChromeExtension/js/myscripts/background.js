@@ -56,6 +56,10 @@ chrome.browserAction.onClicked.addListener(function (tab) {
 	//aXe API
 	chrome.tabs.executeScript(null, {file: "js/lib/node_modules/axe-core/axe.min.js"});
 
+	//aXe API, copied from the official extension
+	//chrome.tabs.executeScript(null, {file: "js/lib/node_modules/content.js"});
+
+
 	//My work:
 	chrome.tabs.insertCSS(null, {file: "css/controllerStyling.css"});
 	chrome.tabs.executeScript(null, {file: "js/myscripts/geterrors.js"});

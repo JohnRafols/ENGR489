@@ -30,9 +30,13 @@ var _errors;
 console.log('Catching Errors...')
 
 initialize(function(){
+  
   //All of the errors
+  //window.onload = function () { 
   _errors = getErrors();
   console.log("Errors Caught");
+  //}
+
 
   // The HTML for the "Controller" of the errors
   var controllerView = chrome.extension.getURL('views/controller.html');
@@ -119,6 +123,8 @@ initialize(function(){
 
     
     $('#individualInfoPanel').accordion({ active: 0 });
+
+    
   });
 
 
@@ -182,7 +188,7 @@ initialize(function(){
       $scope.filterErrorsByRatting = function(value, currentIndex){ 
         if($scope.selectedIndexRatting == currentIndex){
             //Restart everything in types...
-            $scope.$broadcast('displayErrorByRatting', 'null');
+            $scope.$broadcast('displayErrorByRatting', 'none');
             //Also Restart Everything in errors in controller
             $scope.currentRattingFilter = null;
         }
@@ -212,21 +218,20 @@ initialize(function(){
 
 
       $scope.colorIndicator = function(impact){
+            switch (impact) {
+              case 1:
+                return "Minor_Indicator";
+              case 2:
+                return  "Moderate_Indicator";
+              case 3:
+                return  "Serious_Indicator";
+              case 4:
+                return "Critical_Indicator";
+              default:
+                return  "None";
+            }
 
-        switch (impact) {
-          case 1:
-            return "Minor_Indicator";
-          case 2:
-            return  "Moderate_Indicator";
-          case 3:
-            return  "Serious_Indicator";
-          case 4:
-            return "Critical_Indicator";
-          default:
-            return  "None";
         }
-
-    }
 
 
     }])
@@ -268,7 +273,9 @@ initialize(function(){
           link: function (scope, element, attrs) {
 
               var errorsOnDisplay = element.children();
-
+              
+              scope.currentType = 'allErrors';
+              scope.currentRatting = 'allErrors';
 
               //Restart the showing/hiding
               scope.$on('restartEverything',  function(newval,oldval){
@@ -333,6 +340,8 @@ initialize(function(){
                     getErrorClass('None');
 
                  }
+
+                 scope.currentType = description;
                  
               }
 
@@ -415,11 +424,12 @@ initialize(function(){
                 }
 
 
-              // Okay, next thing is to hide what's in the error list...
-    
+                // Okay, next thing is to hide what's in the error list...
                 scope.$emit('hideByFilter', {
                   hide: ratting
                 });
+
+                scope.currentRatting = ratting;
                 
               });
 
@@ -469,6 +479,29 @@ initialize(function(){
               }
 
 
+              scope.$on('toggleCSS', function(event, hasCSS) { 
+                   if(hasCSS){
+                      scope.defaultClass =  "None";
+                   }
+                   else{
+                      var errorIndex = attrs.value;
+                      var desc = scope.errorData[errorIndex].description;
+                      var impact = scope.errorData[errorIndex].ratting;
+                      var errorRatting = errorIntToImpact(impact);
+
+                      // console.log("Type " + scope.currentType)
+                      // console.log("Ratting " + scope.currentRatting )
+                      // console.log("desc " + desc)
+                      // console.log("errorRatting " + errorRatting )
+
+                      if((desc == scope.currentType || scope.currentType == "allErrors") &&
+                        (errorRatting ==  scope.currentRatting || scope.currentRatting == "allErrors")){
+                         getErrorClass(impact);
+                        
+                      }
+
+                   }      
+              });
 
 
           }
@@ -554,12 +587,12 @@ initialize(function(){
              if(scope.selectedIndexIndividual == $index){
                  scope.selectedIndexIndividual = -1; 
                  scope.individualError = null;
-                 $rootScope.$broadcast('showIndividualErrorOnScreen', index, true);
+                 $rootScope.$broadcast('showIndividualErrorOnScreen', $index, true);
              }
              else{
                  scope.selectedIndexIndividual = $index;
                  scope.individualError =  scope.errorData[$index];
-                 $rootScope.$broadcast('showIndividualErrorOnScreen', index, false);
+                 $rootScope.$broadcast('showIndividualErrorOnScreen', $index, false);
              }
 
           };
@@ -582,7 +615,7 @@ initialize(function(){
               if(scope.selectedIndexFilter == filterIndex){
                   //console.log('Restarting type filter')
                   $rootScope.$broadcast('filterByType', {
-                        data: 'no'
+                        data: 'allErrors'
                   });
                   scope.hideByType = null;
                   //scope.selectedIndexFilter = -1; 
@@ -706,10 +739,20 @@ initialize(function(){
             $location.hash(old);
 
           };
-            
-              
 
-      }
+
+
+
+          scope.hasCSS = false;
+          scope.toggleCSS = function (){
+              scope.hasCSS = !scope.hasCSS;
+              $rootScope.$broadcast('toggleCSS',  scope.hasCSS);
+          }
+
+
+
+
+         }
     }])
 
 

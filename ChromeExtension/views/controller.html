@@ -8,20 +8,20 @@
 
 <!-- <div ng-non-bindable>
  -->
-<div class="container" id = "angularJStest">
+<div id = "angularJStest">
    
     <div id="accordionFilters">
 
       <div>
           <h3>
-          Error Rattings 
+          Error Ratings 
           <span style = "display: block; float: right;  margin-right: 10px; " ng-class = "colorIndicator(selectedIndexRatting)" ng-show = "selectedIndexRatting != -1">  </span> 
           </h3>
 
           <div id = "errorRattingsPanel" >
 
                 <ul errors-in-controller>
-                    <li id="totalErrorCount" style = "margin-bottom: 10px;" class = "rattingListItem hoverListItem"
+                    <li id="totalErrorCount" style = "margin-bottom: 10px; text-align: center; font-weight: bold" class = "rattingListItem hoverListItem"
                     ng-click = "
                     filterErrorsByRatting('allErrors', 0);
                     itemClickedRatting(0);
@@ -71,6 +71,10 @@
                         <span ng-class = "colorIndicator(1)">  </span> 
                         </label>
                         <!-- <div class="errorValue">{{minorErrors.length}}</div> -->
+                    </li>
+
+                    <li id = "toggleCSSButton" ng-click="toggleCSS()">
+                         Toggle Css 
                     </li>
 
   
@@ -136,7 +140,10 @@
  
                   
                   <li>
-                   <a ng-click="gotoBottom()" href = "#error{{$index}}">   Error # {{$index + 1}} Type: {{getTypeLetter($index)}} </a>
+
+                              
+
+                   <a ng-click="gotoBottom()" ng-href = "#error{{$index}}" target="_self">   Error # {{$index + 1}} Type: {{getTypeLetter($index)}} </a>
 
                    </li>
 
@@ -203,6 +210,8 @@
 <!--     These are the instructions -->
 
       <div id = "instructions" >
+       <!--  <h3> {{}} / {{}} Tests have passed. </h3>
+        <br> -->
          <!--  Go here when you click an error -->
           <h3> <b> How to use: </b> </h3>
               <ul>  

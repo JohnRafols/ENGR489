@@ -85,12 +85,18 @@ function cssInformation(padding, backgroundColor){
 
 
 function getErrorsAxe(callback){
+
    axe.a11yCheck(document, function (results) {
+
+        console.log("Printing aXe's Results:");
+   		console.log(results)
+
 		//Get all errors
+
 		for(var i = 0; results.violations.length >i ; i++){	
 
 			//	results.violations[0].description;	
-			//	results.violations[0].nodes[0].any[0].message;	
+			//	results.violations[0].nodes[0].any[0].message;
 
 			//This is the general description of the error, there's an elaborate one as well...
 	    	var description = results.violations[i].help;
@@ -102,8 +108,6 @@ function getErrorsAxe(callback){
 
 	    	//The nodes have the actual number of errors
 	    	for(var j = 0; results.violations[i].nodes.length > j; j++){
-
-	    		//console.log(results.violations[i].nodes[j].impact)
 
 				var ratting = errorImpactToInt(results.violations[i].nodes[j].impact);	
 
@@ -120,7 +124,7 @@ function getErrorsAxe(callback){
 				// for(var k = 0; targets.length > k; k++){
 				// 	selectors = selectors + targets[k];
 				// }
-				//console.log(targets);
+				// console.log(targets);
 
 
 		    	//Get relevant Css info:
@@ -153,23 +157,7 @@ function getErrorsAxe(callback){
 				// Here we wrap the DOM's with parent anchor tags, for more convenient control:
 				// Note, some DOM's can't be wrapped (ex: HTML tag, Body tag)
 	  			if($(dom).length == 1 && $(dom).prop("tagName") != "HTML" && $(dom).prop("tagName") != "BODY"){	 
-
-
-  					// $(dom).wrapAll('<a ng-class="home" errors-on-display class = "' 
-  					// 	+ "errorContainer errorRatting" + ratting + '" id = "' + 
-  					// ("error" + (_errors.length)) + ' " name = "' + 
-  					// ("error" + (_errors.length)) + '"= >')
-
-					//$(dom).wrapAll('<a  ng-click="toggle()" ng-class="home" errors-on-display>')
-					//$(dom).addClass("error" + (_errors.length));
-
 					$(dom).wrapAll('<a errors-on-display value = "' +   (_errors.length-1)  + '">')
-					//$(dom).wrapAll('<a  ng-click="toggle()" ng-class="home" errors-on-display>')
-
-					// $(dom).attr( "errors-on-display", '');
-					// $(dom).attr( "value",  		(_errors.length-1)		);
-
-
 	  			}
 	    	}
 		}
@@ -389,12 +377,12 @@ function buildController(){
 	    // Refer to the controller variable
 	    buttons : {
 	      "Show Errors" : function(){
-			  	for(var i = 1; i<5 ; i++){
+			  	for(var i = 0; i < error.length ; i++){
 		  			colorAllErrors(i);
 		  		}
 	      },
 	      "Clear Errors": function(){
-	      		for(var i = 1; i<5 ; i++){
+	      		for(var i = 0; i < error.length ; i++){
 		  			restoreAllErrors(i);
 		  		}
 	      },
