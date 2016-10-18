@@ -26,7 +26,7 @@
                     filterErrorsByRatting('allErrors', 0);
                     itemClickedRatting(0);
                     " ng-class= " {'selectedItemInPanel': 0 == selectedIndexRatting } ">
-                        <label>Total Errors ({{errorData.length}}) </label> 
+                        <div class="label_chromeExtension">Total Errors ({{errorData.length}}) </div> 
                         <!-- <div class="errorValue">{{errorData.length}}</div> -->
 
                     </li>
@@ -35,9 +35,9 @@
                     filterErrorsByRatting('critical', 4);
                     itemClickedRatting(4);
                     " ng-class= " {'selectedItemInPanel': 4 == selectedIndexRatting } ">
-                        <label>Critical ({{criticalErrors.length}})
+                        <div class="label_chromeExtension">Critical ({{criticalErrors.length}})
                         <span ng-class = "colorIndicator(4)">  </span> 
-                        </label> 
+                        </div> 
                         <!-- <div class="errorValue">{{criticalErrors.length}}</div> -->
                     </li>
 
@@ -46,9 +46,9 @@
                     filterErrorsByRatting('serious', 3);
                     itemClickedRatting(3);
                     " ng-class= " {'selectedItemInPanel': 3 == selectedIndexRatting } ">
-                        <label>Serious ({{seriousErrors.length}})
+                        <div class="label_chromeExtension">Serious ({{seriousErrors.length}})
                         <span ng-class = "colorIndicator(3)">  </span> 
-                        </label>
+                        </div>
                         <!-- <div class="errorValue">{{seriousErrors.length}}</div> -->
                     </li>
 
@@ -57,9 +57,9 @@
                     filterErrorsByRatting('moderate', 2);
                     itemClickedRatting(2);
                     " ng-class= " {'selectedItemInPanel': 2 == selectedIndexRatting } ">
-                        <label>Moderate ({{moderateErrors.length}})
+                        <div class="label_chromeExtension">Moderate ({{moderateErrors.length}})
                         <span ng-class = "colorIndicator(2)">  </span> 
-                        </label>
+                        </div>
                         <!-- <div class="errorValue">{{moderateErrors.length}}</div> -->
                     </li>
 
@@ -67,9 +67,9 @@
                     filterErrorsByRatting('minor', 1);
                     itemClickedRatting(1);
                     " ng-class= " {'selectedItemInPanel': 1 == selectedIndexRatting } ">
-                        <label>Minor ({{minorErrors.length}})
+                        <div class="label_chromeExtension">Minor ({{minorErrors.length}})
                         <span ng-class = "colorIndicator(1)">  </span> 
-                        </label>
+                        </div>
                         <!-- <div class="errorValue">{{minorErrors.length}}</div> -->
                     </li>
 
@@ -163,7 +163,7 @@
                 <ul errors-in-controller> 
 
                     <li>
-                    <b> Ratting: </b> <span style = " display: inline-block !important; float: none !important; margin-bottom: -5px !important; " ng-class = "colorIndicator(individualError.ratting)">  </span> 
+                    <b> Rating: </b> <span style = " display: inline-block !important; float: none !important; margin-bottom: -5px !important; " ng-class = "colorIndicator(individualError.ratting)">  </span> 
                     </li>
 
                     <br>
@@ -216,7 +216,7 @@
           <h3> <b> How to use: </b> </h3>
               <ul>  
                   <li>
-                    Click on Error Rattings or Error Types to start vizualizing the errors. 
+                    Click on Error Ratings or Error Types to start vizualizing the errors. 
                   </li>
                   <br>
                   <li>

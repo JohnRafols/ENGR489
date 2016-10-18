@@ -144,7 +144,7 @@ initialize(function(){
   angular.module('webAccessibilityApp', ['angular.filter'])
   //chromeAngular.module('webAccessibilityApp', ['chromeAngular.filter'])
     //This is the main controller
-    .controller('ChromeExtensionCtrl', ['$scope', '$filter', function($scope, $filter) {
+    .controller('ChromeExtensionCtrl', ['$scope', '$filter', '$rootScope', function($scope, $filter, $rootScope) {
 
 
        // All of the (current) errors being manipulated 
@@ -233,6 +233,16 @@ initialize(function(){
 
         }
 
+    //Toggle css button
+      $rootScope.hasCSS = false;
+
+      $rootScope.toggleCSS = function (){
+          $rootScope.hasCSS = !$rootScope.hasCSS;
+          //console.log("now:" + $rootScope.hasCSS)
+          $rootScope.$broadcast('toggleCSS',  $rootScope.hasCSS);
+      }
+
+
 
     }])
 
@@ -281,6 +291,7 @@ initialize(function(){
               scope.$on('restartEverything',  function(newval,oldval){
                  var errorIndex = attrs.value;
                  var impact = scope.errorData[errorIndex].ratting;
+
                  getErrorClass(impact);
 
                  element.removeClass('None');
@@ -330,15 +341,16 @@ initialize(function(){
 
                 if(error.description == description){
                   
-                    // element.addClass('byType');
                     getErrorClass(impact);
                 }
                 else{
-                    //scope.defaultClass =  "";
-                    // "None", is a css class that makes an element invisible. 
-                    //element.addClass('None');
-                    getErrorClass('None');
-
+                 console.log(scope.currentRatting)
+                    if((scope.currentRatting  == 'allErrors' || scope.currentRatting == errorIntToImpact(impact)) && description == 'none'){
+                      getErrorClass(impact);
+                    }
+                    else{
+                       getErrorClass('None');
+                    }
                  }
 
                  scope.currentType = description;
@@ -359,10 +371,14 @@ initialize(function(){
                  var impact = scope.errorData[errorIndex].ratting;
                  var errorRatting = errorIntToImpact(impact);
 
-
                  // Remove the previous individual error's class if it is selected
                  if(element.hasClass("individualError")){
-                    getErrorClass(impact);
+                    if(!$rootScope.hasCSS){                
+                        getErrorClass(impact);
+                      }
+                    else{
+                      scope.defaultClass = "none";
+                    }
                  }
 
                  if(attrs.value == data){
@@ -403,24 +419,25 @@ initialize(function(){
                 var errorIndex = attrs.value;
                 var impact = scope.errorData[errorIndex].ratting;
                 var errorRatting = errorIntToImpact(impact);
-                
+                var desc = scope.errorData[errorIndex].description;
+
             
                 if(ratting == 'noFilter' || ratting == 'allErrors' || errorRatting == ratting){
-                    //need to check the type filter
-                    // var errorDesc = scope.errorData[errorIndex].description; 
-                    // if(scope.selectedIndexFilter != null && scope.selectedIndexFilter != -1){
-                    //   if(errorDesc == scope.listOfErrorDescriptions[scope.selectedIndexFilter].description){
-                    //       getErrorClass(impact);
-                    //   }
-                    // }else{
-                    //       getErrorClass(impact);
-                    // }          
+                    //console.log(scope.currentType)
+                    if(scope.currentType == desc || scope.currentType == 'allErrors' || scope.currentType == 'none')
                     getErrorClass(impact);
                 }
 
-
                 else{
-                    getErrorClass('None');
+
+                    if(scope.currentType == desc && ratting == 'none'){
+                      //console.log(ratting)
+                      getErrorClass(impact);
+                    }
+
+                    else{
+                      getErrorClass('None');
+                    }
                 }
 
 
@@ -451,6 +468,17 @@ initialize(function(){
 
 
               function getErrorClass(impact){
+                //console.log('Css is:' + $rootScope.hasCSS)
+                if($rootScope.hasCSS){       
+                  scope.defaultClass = "None";
+                  if(isNaN(impact)){
+                     scope.icon = "iconHide"
+                  }else{
+                    scope.icon = "icon"
+                  }
+                }  
+
+                else{
                   switch (impact) {
                     case 1:
                       scope.defaultClass = "Minor";
@@ -475,32 +503,33 @@ initialize(function(){
                       scope.icon = "iconHide"
                       break;
                   }
+                }
+                
 
               }
 
 
               scope.$on('toggleCSS', function(event, hasCSS) { 
-                   if(hasCSS){
-                      scope.defaultClass =  "None";
-                   }
-                   else{
+                    
                       var errorIndex = attrs.value;
                       var desc = scope.errorData[errorIndex].description;
                       var impact = scope.errorData[errorIndex].ratting;
                       var errorRatting = errorIntToImpact(impact);
+                     
+                     
 
-                      // console.log("Type " + scope.currentType)
-                      // console.log("Ratting " + scope.currentRatting )
-                      // console.log("desc " + desc)
-                      // console.log("errorRatting " + errorRatting )
-
-                      if((desc == scope.currentType || scope.currentType == "allErrors") &&
-                        (errorRatting ==  scope.currentRatting || scope.currentRatting == "allErrors")){
+                      if((desc == scope.currentType || scope.currentType == "allErrors" || scope.currentType == "none") &&
+                       (errorRatting ==  scope.currentRatting || scope.currentRatting == "allErrors") ||
+                       (scope.currentRatting == 'none' && desc == scope.currentType)
+                       ){
+                         scope.defaultClass = "None";
                          getErrorClass(impact);
                         
                       }
 
-                   }      
+                    
+
+
               });
 
 
@@ -605,6 +634,7 @@ initialize(function(){
            * +--------------------------------------------------------------------+
            */
           scope.hideByType = null;
+          //$rootScope.currentType = 'allErrors';
 
           scope.typeIndex = function(index){
             return String.fromCharCode(65 + index);
@@ -614,8 +644,9 @@ initialize(function(){
               //Communicate this with the errors-on-display directive via broadcast
               if(scope.selectedIndexFilter == filterIndex){
                   //console.log('Restarting type filter')
+                  //
                   $rootScope.$broadcast('filterByType', {
-                        data: 'allErrors'
+                        data: 'none'
                   });
                   scope.hideByType = null;
                   //scope.selectedIndexFilter = -1; 
@@ -626,9 +657,11 @@ initialize(function(){
                         data: description
                   });
                   scope.hideByType = description;
-
               }
           }
+
+
+
 
           //Css
           scope.selectedIndexFilter = -1; 
@@ -642,6 +675,11 @@ initialize(function(){
               scope.currentTypeFilter = String.fromCharCode(65 + $index);
             }
           }
+
+
+
+
+
 
           scope.filterErrorListByType = function(error, ratting){
 
@@ -743,11 +781,7 @@ initialize(function(){
 
 
 
-          scope.hasCSS = false;
-          scope.toggleCSS = function (){
-              scope.hasCSS = !scope.hasCSS;
-              $rootScope.$broadcast('toggleCSS',  scope.hasCSS);
-          }
+        
 
 
 

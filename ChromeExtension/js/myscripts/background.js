@@ -53,6 +53,8 @@ chrome.browserAction.onClicked.addListener(function (tab) {
 	chrome.tabs.insertCSS(null, {file: "js/lib/jquery-ui-1.11.4/jquery-ui.min.css"});
 	chrome.tabs.insertCSS(null, {file: "js/lib/jquery-ui-1.11.4/jquery-ui.theme.min.css"});
 
+
+
 	//aXe API
 	chrome.tabs.executeScript(null, {file: "js/lib/node_modules/axe-core/axe.min.js"});
 

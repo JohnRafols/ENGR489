@@ -24,7 +24,7 @@
       margin-bottom: 5px !important;
       background: #3498db;
       border-radius: 28px; }
-      #angularJStest ul li .rattingListItem label {
+      #angularJStest ul li .rattingListItem .label_chromeExtension {
         margin: 5px !important; }
   #angularJStest #errorRattingsPanel li, #angularJStest #errorTypesPanel li, #angularJStest #errorListPanel li {
     padding: 2px !important;
