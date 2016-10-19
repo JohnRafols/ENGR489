@@ -9,7 +9,6 @@
 	"browser_action": {
 		"default_icon" : "icon.png"
 	},
-	"options_page" : "options.html",
 	"permissions": [
 		"background",
 		"tabs",
@@ -26,9 +25,6 @@
 	],
 	"web_accessible_resources": [
 	    "views/controller.html", 
-	    "views/options.html",
-	    "views/views1.html",
-	    "views/views2.html",
 	    "js/lib/jquery-ui-1.11.4/images/ui-bg_flat_10_000000_40x100.png",
 		"js/lib/jquery-ui-1.11.4/images/ui-bg_gloss-wave_35_f6a828_500x100.png",
 		"js/lib/jquery-ui-1.11.4/images/ui-icons_ffffff_256x240.png",
